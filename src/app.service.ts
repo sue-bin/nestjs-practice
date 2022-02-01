@@ -6,7 +6,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  getHi() : string {
-    return "HI NEST"
+  getHi(): string {
+    return 'HI NEST';
   }
 }
