@@ -8,37 +8,37 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Movie, PartialMovie } from './entities/movie.entity';
+import { MoviesService } from './movies.service';
 
 @Controller('movies') // name in this blanket is entry point // router
 export class MoviesController {
+  constructor(private readonly moviesService: MoviesService) {}
+
   @Get()
-  getAllMovies(): string {
-    return 'This will return all movies';
+  getAllMovies(): Movie[] {
+    return this.moviesService.getAll();
   }
 
-  @Get('/:id/:name') // :id => get data for id
-  getOne(@Param('id') id: string) {
+  @Get(':id') // :id => get data for id
+  getOne(@Param('id') id: string): Movie {
     //ask for id with Param decorator
-    return `This will return one movie with id:${id}`;
+    return this.moviesService.getOne(+id);
   }
 
   @Post()
-  create(@Body() movieData: { name: string; director: string }) {
-    const { name, director } = movieData;
-    return `This will create movie with name ${name} and director ${director}`;
+  create(@Body() movieData: Movie) {
+    return this.moviesService.createMovieData(movieData);
   }
 
-  @Delete('/:id')
-  delete(@Param('id') movieId: string) {
-    return `This will delete the movie with id :${movieId}`;
+  @Delete(':id')
+  deleteOne(@Param('id') movieId: string): boolean {
+    return this.moviesService.deleteOne(+movieId);
   }
 
-  @Patch('/:id') //update some part of resource
-  update(
-    @Param('id') movieId: string,
-    @Body() movieData: { name?: string; director?: string }
-  ) {
-    return `This will update the movie with id :${movieId} and data: ${movieData.name} - ${movieData.director}`;
+  @Patch(':id') //update some part of resource
+  update(@Param('id') movieId: string, @Body() movieData: PartialMovie) {
+    return this.moviesService.updateMovie(+movieId, movieData);
   }
 
   @Get('search')
